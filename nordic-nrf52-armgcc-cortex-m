@@ -1,0 +1,21 @@
+FROM debian:jessie
+
+RUN apt-get update
+RUN apt-get install -y \
+    unzip \
+    gcc-arm-none-eabi \
+    gdb-arm-none-eabi \
+    build-essential \
+    wget \
+    curl
+
+# Check out the IoT SDK
+RUN mkdir nrf_iot_sdk
+RUN wget https://developer.nordicsemi.com/nRF5_IoT_SDK/nRF5_IoT_SDK_v0.9.x/nrf5_iot_sdk_3288530.zip -O /nrf_iot_sdk/nrf_sdk.zip
+RUN cd /nrf_iot_sdk && unzip ./nrf_sdk.zip
+
+# Check out the nRF5 SDK
+RUN mkdir nrf5_sdk
+RUN wget https://www.nordicsemi.com/eng/nordic/download_resource/59011/61/84730020 -O /nrf5_sdk/nrf_sdk.zip
+RUN cd /nrf5_sdk && unzip ./nrf_sdk.zip
+

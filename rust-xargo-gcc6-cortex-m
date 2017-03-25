@@ -1,0 +1,32 @@
+FROM debian:jessie
+
+RUN apt-get update
+
+RUN apt-get install -y \
+  wget \
+  curl \
+  nano \
+  build-essential
+
+# "Install" GCC6.1 arm-none-eabi
+RUN wget https://armkeil.blob.core.windows.net/developer/Files/downloads/gnu-rm/6_1-2017q1/gcc-arm-none-eabi-6-2017-q1-update-linux.tar.bz2 \
+  -O /gcc.tar.bz2
+
+RUN tar xf /gcc.tar.bz2
+ENV PATH="/gcc-arm-none-eabi-6-2017-q1-update/bin:${PATH}"
+
+# Install rust
+RUN curl https://sh.rustup.rs -sSf > install_rust.sh
+RUN /bin/bash /install_rust.sh -y
+ENV PATH="/root/.cargo/bin:${PATH}"
+
+# Install and set to nightly, necessary for embedded development
+RUN rustup install nightly
+RUN rustup default nightly
+
+# Use Xargo for cross platform building
+RUN cargo install xargo
+
+# Add the rust-src component so we can build `core`
+RUN rustup component add rust-src
+

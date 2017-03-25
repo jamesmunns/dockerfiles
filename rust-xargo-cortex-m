@@ -1,0 +1,26 @@
+FROM debian:jessie
+
+RUN apt-get update
+
+RUN apt-get install -y \
+  gcc-arm-none-eabi \
+  gdb-arm-none-eabi \
+  curl \
+  nano \
+  build-essential
+
+# Install rust
+RUN curl https://sh.rustup.rs -sSf > install_rust.sh
+RUN /bin/bash /install_rust.sh -y
+ENV PATH="/root/.cargo/bin:${PATH}"
+
+# Install and set to nightly, necessary for embedded development
+RUN rustup install nightly
+RUN rustup default nightly
+
+# Use Xargo for cross platform building
+RUN cargo install xargo
+
+# Add the rust-src component so we can build `core`
+RUN rustup component add rust-src
+
